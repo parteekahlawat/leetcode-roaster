@@ -22,11 +22,9 @@ API = "https://leetcode-stats-api.herokuapp.com/"
 
 
 url = f"{API}{username}"
+response = requests.get(url)
+data = response.json() 
 try:
-
-    response = requests.get(url)
-    data = response.json() 
-
     if data["status"] == "success":
 
         if "submissionCalendar" in data:
@@ -34,7 +32,7 @@ try:
         
 
         template = '''
-        Give me a most brutal and most dark humor, bad language roast on this Leetcode stats:
+        give me the most brutual, most savage, spicy, burn roast for these leetcode stats:
         {response}
         '''
         prompt = PromptTemplate(template=template, input_variables=["response"])
@@ -47,7 +45,7 @@ try:
         display = roast.content
         # display = roast["content"]
         st.write(display)
-    else:
-        st.error("Wrong Username! Please check again.")
+    elif data["status"] == "error":
+        st.error(data["message"][:26])
 except requests.exceptions.RequestException as e:
     st.error(f"An error occurred: {e}")
